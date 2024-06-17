@@ -1,6 +1,9 @@
 import Post from '../models/post.js';
-import User from '../models/user.js';
-import { deleteDataFromCache, storeDataInCache } from '../utils/cache-posts.js';
+import {
+  deleteDataFromCache,
+  retrieveDataFromCache,
+  storeDataInCache,
+} from '../utils/cache-posts.js';
 import { HTTP_STATUS, REDIS_KEYS, RESPONSE_MESSAGES, validCategories } from '../utils/constants.js';
 export const createPostHandler = async (req, res) => {
   try {
@@ -12,8 +15,6 @@ export const createPostHandler = async (req, res) => {
       description,
       isFeaturedPost = false,
     } = req.body;
-
-    const userId = req.user._id;
 
     // Validation - check if all fields are filled
     if (!title || !authorName || !imageLink || !description || !categories) {
@@ -44,7 +45,6 @@ export const createPostHandler = async (req, res) => {
       description,
       categories,
       isFeaturedPost,
-      authorId: req.user._id,
     });
 
     const [savedPost] = await Promise.all([
@@ -53,9 +53,6 @@ export const createPostHandler = async (req, res) => {
       deleteDataFromCache(REDIS_KEYS.FEATURED_POSTS), // Invalidate cache for featured posts
       deleteDataFromCache(REDIS_KEYS.LATEST_POSTS), // Invalidate cache for latest posts
     ]);
-
-    // updating user doc to include the ObjectId of the created post
-    await User.findByIdAndUpdate(userId, { $push: { posts: savedPost._id } });
 
     res.status(HTTP_STATUS.OK).json(savedPost);
   } catch (err) {
@@ -150,26 +147,8 @@ export const deletePostByIdHandler = async (req, res) => {
     if (!post) {
       return res.status(HTTP_STATUS.NOT_FOUND).json({ message: RESPONSE_MESSAGES.POSTS.NOT_FOUND });
     }
-    await User.findByIdAndUpdate(post.authorId, { $pull: { posts: req.params.id } });
 
     res.status(HTTP_STATUS.OK).json({ message: RESPONSE_MESSAGES.POSTS.DELETED });
-  } catch (err) {
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
-  }
-};
-
-export const getRelatedPostsByCategories = async (req, res) => {
-  const { categories } = req.query;
-  if (!categories) {
-    return res
-      .status(HTTP_STATUS.NOT_FOUND)
-      .json({ message: RESPONSE_MESSAGES.POSTS.CATEGORIES_NOTFOUND });
-  }
-  try {
-    const filteredCategoryPosts = await Post.find({
-      categories: { $in: categories },
-    });
-    res.status(HTTP_STATUS.OK).json(filteredCategoryPosts);
   } catch (err) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }

@@ -9,7 +9,6 @@ import {
   updatePostHandler,
 } from '../../../controllers/posts-controller.js';
 import Post from '../../../models/post.js';
-import { expect, jest, it, describe } from '@jest/globals';
 import { validCategories, HTTP_STATUS, RESPONSE_MESSAGES } from '../../../utils/constants.js';
 import { createPostObject, createRequestObject, res } from '../../utils/helper-objects.js';
 
@@ -81,17 +80,13 @@ describe('createPostHandler', () => {
     const req = createRequestObject({ body: postObject });
 
     Post.mockImplementationOnce(() => ({
-      save: jest
-        .fn()
-        .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR)),
+      save: jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR)),
     }));
 
     await createPostHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -116,16 +111,12 @@ describe('getAllPostsHandler', () => {
   it('Get all posts: Failure - Internal Server Error', async () => {
     const req = createRequestObject();
 
-    Post.find = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.find = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await getAllPostsHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -150,16 +141,12 @@ describe('getFeaturedPostsHandler', () => {
   it('Get featured posts: Failure - Internal Server Error', async () => {
     const req = createRequestObject();
 
-    Post.find = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.find = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await getFeaturedPostsHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -193,16 +180,12 @@ describe('getPostByCategoryHandler', () => {
   it('Get posts by category: Failure - Internal Server Error', async () => {
     const req = createRequestObject({ params: { category: validCategories[1] } });
 
-    Post.find = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.find = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await getPostByCategoryHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -230,17 +213,13 @@ describe('getLatestPostsHandler', () => {
     const req = createRequestObject();
 
     Post.find.mockReturnValueOnce({
-      sort: jest
-        .fn()
-        .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR)),
+      sort: jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR)),
     });
 
     await getLatestPostsHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -272,16 +251,12 @@ describe('getPostByIdHandler', () => {
   it('Get post by ID: Failure - Internal Server Error', async () => {
     const req = createRequestObject({ params: { id: '6910293383' } });
 
-    Post.findById = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.findById = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await getPostByIdHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -324,16 +299,12 @@ describe('updatePostHandler', () => {
       body: { title: 'Updated Post' },
     });
     // Mock the behavior of Post.findByIdAndUpdate
-    Post.findByIdAndUpdate = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.findByIdAndUpdate = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await updatePostHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });
 
@@ -370,15 +341,11 @@ describe('deletePostByIdHandler', () => {
     const req = createRequestObject({ params: { id: '6910293383' } });
 
     // Mock the behavior of Post.findByIdAndRemove
-    Post.findByIdAndDelete = jest
-      .fn()
-      .mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
+    Post.findByIdAndDelete = jest.fn().mockRejectedValueOnce(new Error(RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR));
 
     await deletePostByIdHandler(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(res.json).toHaveBeenCalledWith({
-      message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR,
-    });
+    expect(res.json).toHaveBeenCalledWith({ message: RESPONSE_MESSAGES.COMMON.INTERNAL_SERVER_ERROR });
   });
 });

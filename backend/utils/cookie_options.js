@@ -1,8 +1,12 @@
-import { ACCESS_COOKIE_MAXAGE, NODE_ENV } from '../config/utils.js';
-
-export const cookieOptions = {
+export const accessCookieOptions = {
   httpOnly: true,
-  sameSite: NODE_ENV === 'Development' ? 'lax' : 'none',
-  secure: NODE_ENV === 'Development' ? false : true,
-  maxAge: ACCESS_COOKIE_MAXAGE,
+  sameSite: 'none',
+  secure: true,
+  maxAge: process.env.ACCESS_COOKIE_MAXAGE, 
+};
+export const refreshCookieOptions = {
+  httpOnly: true,
+  sameSite: 'none',
+  secure: true,
+  maxAge: process.env.REFRESH_COOKIE_MAXAGE, 
 };
